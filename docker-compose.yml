@@ -1,0 +1,22 @@
+---
+version: '3'
+services:
+  frontend:
+    build: .
+    volumes:
+      - ./data:/opt/data
+    environment:
+      - SP_HOSTNAME=sp.nordu.test
+      - APPSERVERS=backend:8443
+      - DISABLE_SUBJECT_CONFIRMATION=true
+    links:
+      - backend
+    ports:
+      - 127.0.0.1:8443:443
+  backend:
+    image: python:2.7-alpine
+    volumes:
+      - ./header-echo:/opt
+    command: ["python", "/opt/header-echo.py"]
+
+

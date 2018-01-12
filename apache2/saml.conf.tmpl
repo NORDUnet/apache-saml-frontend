@@ -1,0 +1,62 @@
+
+<VirtualHost *:80>
+  ServerName __SERVER_NAME__
+  Redirect / https://__SERVER_NAME__/
+</VirtualHost>
+
+<VirtualHost *:443>
+  ServerName __SERVER_NAME__
+  SSLEngine on
+  SSLProtocol all -SSLv3 -TLSv1 -TLSv1.1
+  
+  SSLCertificateFile      __SSL_CERT__
+  SSLCertificateKeyFile   __SSL_KEY__
+
+  <Location __LOCATION__>
+    Require valid-user
+    AuthType "Mellon"
+    MellonEnable "auth"
+    MellonSecureCookie On
+    MellonMergeEnvVars On
+
+    MellonSPentityId "https://__SERVER_NAME__/mellon"
+    MellonSPPrivateKeyFile __SP_KEY__
+    MellonSPCertFile __SP_CERT__
+    # Metadata conf
+
+    # Use eppn as user attribute 
+    MellonUser "urn:oid:1.3.6.1.4.1.5923.1.1.1.6"
+    MellonSetEnvNoPrefix "EPPN" "urn:oid:1.3.6.1.4.1.5923.1.1.1.6"
+    MellonSetEnvNoPrefix "MAIL" "urn:oid:0.9.2342.19200300.100.1.3"
+    MellonSetEnvNoPrefix "CN" "urn:oid:2.5.4.3"
+    MellonSetEnvNoPrefix "DISPLAY_NAME" "urn:oid:2.16.840.1.113730.3.1.241"
+    MellonSetEnvNoPrefix "GN" "urn:oid:2.5.4.42"
+    MellonSetEnvNoPrefix "SN" "urn:oid:2.5.4.4"
+    MellonSetEnvNoPrefix "PRIMARY_AFFILIATION" "urn:oid:1.3.6.1.4.1.5923.1.1.1.5"
+
+    RequestHeader set __REMOTE_USER_NAME__ %{__REMOTE_USER_VAR__}e
+    RequestHeader set __HEADER_PREFIX__EPPN %{EPPN}e
+    RequestHeader set __HEADER_PREFIX__MAIL %{MAIL}e
+
+    # Mellon conf 
+  </Location>
+
+  ProxyPass / balancer://app/
+  ProxyPassReverse / balancer://app/
+  ProxyPreserveHost On
+
+  CustomLog /proc/self/fd/1 vhost_combined
+</VirtualHost>
+
+<Proxy balancer://app>
+</Proxy>
+
+SSLCipherSuite          ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
+SSLHonorCipherOrder     on
+SSLCompression          off
+SSLSessionTickets       off
+
+SSLUseStapling          on
+SSLStaplingResponderTimeout 5
+SSLStaplingReturnResponderErrors off
+SSLStaplingCache        shmcb:/var/run/ocsp(128000)
