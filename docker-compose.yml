@@ -9,6 +9,7 @@ services:
       - SP_HOSTNAME=sp.nordu.test
       - APPSERVERS=backend:8443
       - DISABLE_SUBJECT_CONFIRMATION=true
+      - SP_LOCATION=/secret
     links:
       - backend
     ports:

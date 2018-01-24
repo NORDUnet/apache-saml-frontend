@@ -48,4 +48,6 @@ You probably want to add the chaining files as well (bundle files). Just concate
 cat SSL_CERT.pem BUNDLE.pem > SP_HOSTNAME.crt 
 ```
 
+## SP metadata
 
+The SP metadata can be downloaded from `<SP_HOSTNAME><SP_LOCATION>/mellon/metadata`.

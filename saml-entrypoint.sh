@@ -38,6 +38,8 @@ fi
 # config magic
 SAML_CONF=/etc/apache2/sites-available/saml.conf
 SP_LOCATION=${SP_LOCATION:-/}  # Default location /
+# Remove trailing slash. Even if it is default
+SP_LOCATION=$(echo "$SP_LOCATION" | sed 's|/$||') 
 sed -e "s/__SERVER_NAME__/$SP_HOSTNAME/" \
     -e "s|__SSL_KEY__|$SSL_KEY|" \
     -e "s|__SSL_CERT__|$SSL_CERT|" \

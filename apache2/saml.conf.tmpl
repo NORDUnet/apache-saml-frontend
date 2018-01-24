@@ -12,16 +12,17 @@
   SSLCertificateFile      __SSL_CERT__
   SSLCertificateKeyFile   __SSL_KEY__
 
-  <Location __LOCATION__>
+  <Location __LOCATION__/>
     Require valid-user
     AuthType "Mellon"
     MellonEnable "auth"
     MellonSecureCookie On
     MellonMergeEnvVars On
 
-    MellonSPentityId "https://__SERVER_NAME__/mellon"
+    MellonSPentityId "https://__SERVER_NAME____LOCATION__/mellon"
     MellonSPPrivateKeyFile __SP_KEY__
     MellonSPCertFile __SP_CERT__
+    MellonEndpointPath __LOCATION__/mellon
     # Metadata conf
 
     # Use eppn as user attribute 
