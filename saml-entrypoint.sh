@@ -94,7 +94,7 @@ if [ -f /opt/data/mellon.conf ]; then
 fi
 
 # enable saml config
-a2ensite saml
+a2ensite -q saml
 
 # Fix logging
 if [ -z "$ACCESS_LOG_OFF" ]; then
